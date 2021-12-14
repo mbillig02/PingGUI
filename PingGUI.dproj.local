@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2011/04/03 19:18:52.159.dfm,C:\Tmp\Delphi.Win32\PingGUI\Main.dfm=C:\Tmp\Delphi.Win32\PingGUI\MFUnit.dfm</Transaction>
+    <Transaction>2011/04/03 19:18:52.159.pas,C:\Tmp\Delphi.Win32\PingGUI\Main.pas=C:\Tmp\Delphi.Win32\PingGUI\MFUnit.pas</Transaction>
+    <Transaction>2013/01/20 16:54:46.708.dfm,C:\Tmp\Delphi.Win32\PingGUI\HLEUnit.dfm=C:\Tmp\Delphi.Win32\PingGUI\OKCANCL2.dfm</Transaction>
+    <Transaction>2013/01/20 16:54:46.708.pas,C:\Tmp\Delphi.Win32\PingGUI\HLEUnit.pas=C:\Tmp\Delphi.Win32\PingGUI\OKCANCL2.pas</Transaction>
+    <Transaction>2017/11/26 12:50:11.438.dfm,C:\Tmp\Delphi.Win32\PingGUI\DSUnit.dfm=C:\Tmp\Delphi.Win32\PingGUI\Unit1.dfm</Transaction>
+    <Transaction>2017/11/26 12:50:11.438.pas,C:\Tmp\Delphi.Win32\PingGUI\DSUnit.pas=C:\Tmp\Delphi.Win32\PingGUI\Unit1.pas</Transaction>
+    <Transaction>2017/11/26 13:18:20.049.pas,C:\Tmp\Delphi.Win32\PingGUI\DLUnit.pas=C:\Tmp\Delphi.Win32\PingGUI\DSUnit.pas</Transaction>
+    <Transaction>2017/11/26 13:18:20.049.dfm,C:\Tmp\Delphi.Win32\PingGUI\DLUnit.dfm=C:\Tmp\Delphi.Win32\PingGUI\DSUnit.dfm</Transaction>
+    <Transaction>2021/12/06 18:14:40.953,C:\TMP\Delphi.Win32\PingGUI\Encryption.pas=</Transaction>
+  </Transactions>
+</BorlandProject>
