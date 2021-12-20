@@ -6,7 +6,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   SysUtils, Classes, IdIcmpClient, IdBaseComponent, IdComponent, IdRawBase, IdRawClient,
   Spin, OverbyteIcsWndControl, OverbyteIcsPing, Buttons, TeEngine, Series,
-  TeeProcs, Chart, ComCtrls, FileCtrl, PingThrd, JvExExtCtrls,
+  TeeProcs, Chart, ComCtrls, FileCtrl, JvExExtCtrls,
   JvExtComponent, JvClock, JvComponentBase,
   JvRollOut, VclTee.TeeGDIPlus, OverbyteIcsSmtpProt, JvBalloonHint,
   System.Actions, Vcl.ActnList, Vcl.Menus;
@@ -118,8 +118,7 @@ type
     CBPanel: TPanel;
     OpenDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
-    DtaDirBtn: TSpeedButton;
-    DtaDirJvBalloonHint: TJvBalloonHint;
+    ClearMemosAndLinesBtn: TSpeedButton;
     MainMenu: TMainMenu;
     ActionList: TActionList;
     aClearHosts: TAction;
@@ -150,6 +149,9 @@ type
     mmiMisc: TMenuItem;
     aExit: TAction;
     mmiExit: TMenuItem;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
     procedure TimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure SecondsToShowComboBoxChange(Sender: TObject);
@@ -185,8 +187,6 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure PingChartResize(Sender: TObject);
     procedure OpenDirectory(DirectoryName: String);
-    procedure DtaDirBtnMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure HostComboBoxChange(Sender: TObject);
     function GetLstDir: String;
     procedure aClearHostsExecute(Sender: TObject);
@@ -202,6 +202,10 @@ type
     procedure aMonthOfSummaryReportsExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure aExitExecute(Sender: TObject);
+    procedure aCopyDtaDirPathToClipboardExecute(Sender: TObject);
+    procedure aCopyLstDirPathToClipboardExecute(Sender: TObject);
+    procedure aOpenDtaDirInExplorerExecute(Sender: TObject);
+    procedure aOpenLstDirInExplorerExecute(Sender: TObject);
   private
     FInitialized: Boolean;
     FLogOpen: Boolean;
@@ -632,7 +636,7 @@ procedure TMainForm.DoPingThread(PingThreadId: Integer; HostToPing: String);
 begin
   with TPingThread.Create(True) do      // create suspended
   begin
-    PingAddThread(ThreadId);            // keep threadid so it's freed
+//    PingAddThread(ThreadId);            // keep threadid so it's freed
     FreeOnTerminate := True;
     PingId := PingThreadId;             // keep track of the results
     OnTerminate := PingThreadTermPing;  // where we get the response
@@ -640,7 +644,11 @@ begin
     PingTimeout := 4000;                // ms
     PingTTL := 32;                      // hops
     PingLookupReply := False;           // don't need response host name lookup
-    Resume;                             // start it now
+    {$IF CompilerVersion < 21}
+        Resume;    // start it now
+    {$ELSE}
+        Start;
+    {$IFEND}
   end;
 end;
 
@@ -653,38 +661,6 @@ begin
     nil,
     SW_NORMAL     //see other possibilities by ctrl+clicking on SW_NORMAL
     );
-end;
-
-procedure TMainForm.DtaDirBtnMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-   if ssShift in Shift then
-  begin
-    case Button of
-      mbRight:
-      begin
-        // Shift-Right-Click
-      end;
-    end;
-  end
-  else
-  begin
-    case Button of
-      mbLeft:
-      begin
-        // Left-Click
-        OpenDirectory(DtaDir);
-      end;
-      mbRight:
-      begin
-        // Right-Click
-        DtaDirBtn.Hint := '';
-        Clipboard.AsText := DtaDir;
-        DtaDirJvBalloonHint.ActivateHint(DtaDirBtn, '(Copied to clipboard)', DtaDir, 4000);
-      end;
-    end;
-  end;
-
 end;
 
 procedure TMainForm.MemoBGColor(TheMemo: TMemo; FontColor: TColor);
@@ -995,7 +971,7 @@ begin
       3: if DisplayMemo3.Color <> clWhite then
          begin
            for i := DisplayMemo3.Lines.Count - 1 downto 0 do
-             if Pos('timed out',DisplayMemo3.Lines[i]) > 0 then
+             if Pos('timed out', DisplayMemo3.Lines[i]) > 0 then
              begin
                Label3LTT.Caption := Copy(DisplayMemo3.Lines[i], 1, 8);
                Break;
@@ -1004,7 +980,7 @@ begin
       4: if DisplayMemo4.Color <> clWhite then
          begin
            for i := DisplayMemo4.Lines.Count - 1 downto 0 do
-             if Pos('timed out',DisplayMemo4.Lines[i]) > 0 then
+             if Pos('timed out', DisplayMemo4.Lines[i]) > 0 then
              begin
                Label4LTT.Caption := Copy(DisplayMemo4.Lines[i], 1, 8);
                Break;
@@ -1013,7 +989,7 @@ begin
       5: if DisplayMemo5.Color <> clWhite then
          begin
            for i := DisplayMemo5.Lines.Count - 1 downto 0 do
-             if Pos('timed out',DisplayMemo5.Lines[i]) > 0 then
+             if Pos('timed out', DisplayMemo5.Lines[i]) > 0 then
              begin
                Label5LTT.Caption := Copy(DisplayMemo5.Lines[i], 1, 8);
                Break;
@@ -1022,7 +998,7 @@ begin
       6: if DisplayMemo6.Color <> clWhite then
          begin
            for i := DisplayMemo6.Lines.Count - 1 downto 0 do
-             if Pos('timed out',DisplayMemo6.Lines[i]) > 0 then
+             if Pos('timed out', DisplayMemo6.Lines[i]) > 0 then
              begin
                Label6LTT.Caption := Copy(DisplayMemo6.Lines[i], 1, 8);
                Break;
@@ -1031,7 +1007,7 @@ begin
       7: if DisplayMemo7.Color <> clWhite then
          begin
            for i := DisplayMemo7.Lines.Count - 1 downto 0 do
-             if Pos('timed out',DisplayMemo7.Lines[i]) > 0 then
+             if Pos('timed out', DisplayMemo7.Lines[i]) > 0 then
              begin
                Label7LTT.Caption := Copy(DisplayMemo7.Lines[i], 1, 8);
                Break;
@@ -1040,7 +1016,7 @@ begin
       8: if DisplayMemo8.Color <> clWhite then
          begin
            for i := DisplayMemo8.Lines.Count - 1 downto 0 do
-             if Pos('timed out',DisplayMemo8.Lines[i]) > 0 then
+             if Pos('timed out', DisplayMemo8.Lines[i]) > 0 then
              begin
                Label8LTT.Caption := Copy(DisplayMemo8.Lines[i], 1, 8);
                Break;
@@ -1425,8 +1401,8 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  ReportMemoryLeaksOnShutdown := (DebugHook <> 0); // Report if running debugger
-//  ReportMemoryLeaksOnShutdown := True;
+//  ReportMemoryLeaksOnShutdown := (DebugHook <> 0); // Report if running debugger
+  ReportMemoryLeaksOnShutdown := True;
 end;
 
 procedure TMainForm.AutoZipJvClockAlarm(Sender: TObject);
@@ -2325,6 +2301,26 @@ end;
 function TMainForm.GetLstDir: String;
 begin
   Result := LstDir;
+end;
+
+procedure TMainForm.aOpenDtaDirInExplorerExecute(Sender: TObject);
+begin
+  OpenDirectory(DtaDir);
+end;
+
+procedure TMainForm.aOpenLstDirInExplorerExecute(Sender: TObject);
+begin
+  OpenDirectory(LstDir);
+end;
+
+procedure TMainForm.aCopyDtaDirPathToClipboardExecute(Sender: TObject);
+begin
+  Clipboard.AsText := DtaDir;
+end;
+
+procedure TMainForm.aCopyLstDirPathToClipboardExecute(Sender: TObject);
+begin
+  Clipboard.AsText := LstDir;
 end;
 
 end.

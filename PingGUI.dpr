@@ -1,16 +1,15 @@
 program PingGUI;
 
 uses
-//  FastMM4, // FastMM4 or SysUtils
+  FastMM4,
   Forms,
   Windows,
   Classes,
-  SysUtils, // FastMM4 or SysUtils
+//  SysUtils,
   MFUnit in 'MFUnit.pas' {MainForm},
   UtlUnit in '..\UTL\UtlUnit.pas',
   About in 'About.pas' {AboutBox},
   HLEUnit in 'HLEUnit.pas' {HLEDlg},
-  PingThrd in 'PingThrd.pas',
   PadUnit in 'PadUnit.pas' {PadForm},
   DLUnit in 'DLUnit.pas' {DisplayLogForm};
 

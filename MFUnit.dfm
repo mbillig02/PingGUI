@@ -365,7 +365,7 @@ object MainForm: TMainForm
     AllowPanning = pmNone
     Legend.Visible = False
     Title.Text.Strings = (
-      'Ping Time Chart')
+      'Ping Time Graph')
     BottomAxis.DateTimeFormat = 'h:mm:ss'
     BottomAxis.Increment = 0.000011574074074074
     BottomAxis.LabelsAngle = 90
@@ -379,18 +379,16 @@ object MainForm: TMainForm
       321)
     DefaultCanvas = 'TGDIPlusCanvas'
     ColorPaletteIndex = 13
-    object DtaDirBtn: TSpeedButton
-      Left = 688
+    object ClearMemosAndLinesBtn: TSpeedButton
+      Left = 656
       Top = 3
-      Width = 46
+      Width = 78
       Height = 25
-      Hint = 'DTA directory, LC-Open, RC-Copy to clipboard'
+      Action = aClearGraph
       Anchors = [akTop, akRight]
-      Caption = 'DtaDir'
       Flat = True
       ParentShowHint = False
       ShowHint = True
-      OnMouseDown = DtaDirBtnMouseDown
     end
     object SecondsToShowComboBox: TComboBox
       Left = 5
@@ -1282,10 +1280,6 @@ object MainForm: TMainForm
     Left = 696
     Top = 120
   end
-  object DtaDirJvBalloonHint: TJvBalloonHint
-    Left = 515
-    Top = 200
-  end
   object MainMenu: TMainMenu
     Left = 25
     Top = 131
@@ -1294,6 +1288,27 @@ object MainForm: TMainForm
       OnClick = aExitExecute
       object mmiSaveToCmdFile: TMenuItem
         Action = aSaveToCmdFile
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object mmiOpenDtaDirInExplorer: TMenuItem
+        Action = aOpenDtaDirInExplorer
+      end
+      object mmiCopyDtaDirPathToClipboard: TMenuItem
+        Action = aCopyDtaDirPathToClipboard
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object mmiOpenLstDirInExplorer: TMenuItem
+        Action = aOpenLstDirInExplorer
+      end
+      object mmiCopyLstDirPathToClipboard: TMenuItem
+        Action = aCopyLstDirPathToClipboard
+      end
+      object N2: TMenuItem
+        Caption = '-'
       end
       object mmiExit: TMenuItem
         Action = aExit
@@ -1360,10 +1375,28 @@ object MainForm: TMainForm
     end
     object aSaveToCmdFile: TAction
       Caption = 'Save To Cmd File'
+      Hint = 'Save current selections to CMD file'
       OnExecute = aSaveToCmdFileExecute
+    end
+    object aOpenDtaDirInExplorer: TAction
+      Caption = 'Open DtaDir In Explorer'
+      OnExecute = aOpenDtaDirInExplorerExecute
+    end
+    object aCopyDtaDirPathToClipboard: TAction
+      Caption = 'Copy DtaDir Path To Clipboard'
+      OnExecute = aCopyDtaDirPathToClipboardExecute
+    end
+    object aOpenLstDirInExplorer: TAction
+      Caption = 'Open LstDir In Explorer'
+      OnExecute = aOpenLstDirInExplorerExecute
+    end
+    object aCopyLstDirPathToClipboard: TAction
+      Caption = 'Copy LstDir Path To Clipboard'
+      OnExecute = aCopyLstDirPathToClipboardExecute
     end
     object aClearGraph: TAction
       Caption = 'Clear Graph'
+      Hint = 'Clear inactive Memos and Graph Lines'
       OnExecute = aClearGraphExecute
     end
     object aAbout: TAction

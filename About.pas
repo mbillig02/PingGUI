@@ -77,7 +77,7 @@ var
   UpdaterProgramFileName, UpdateStr: String;
 
 {$R *.dfm}
-{========================================================================}
+
 function FileNameToVersionStr(FileNameStr: String): String;
 var
   Regex: TPerlRegEx;
@@ -96,7 +96,7 @@ begin
   end;
   Regex.Free;
 end;
-{========================================================================}
+
 class function TAboutBox.Execute: TModalResult;
 begin
   with TAboutBox.Create(nil) do
@@ -109,7 +109,7 @@ begin
     end;
   end;
 end;
-{========================================================================}
+
 procedure TAboutBox.fadeTimerTimer(Sender: TObject);
 const
   FADE_IN_SPEED = 5;
@@ -143,7 +143,7 @@ begin
       end;
   end;
 end;
-{========================================================================}
+
 procedure TAboutBox.LoadSectionUpdate;
 var
   RegIniFile: TIniFile;
@@ -173,7 +173,7 @@ begin
     PgmUpdBtn.Enabled := False;
   end;
 end;
-{========================================================================}
+
 procedure TAboutBox.FormCreate(Sender: TObject);
 begin
   AlphaBlend := True;
@@ -185,17 +185,17 @@ begin
   UpdaterProgramFileName := LclExeDir + 'PgmUpdater.exe';
   LoadSectionUpdate;
 end;
-{========================================================================}
+
 procedure TAboutBox.JvBalloonHintClose(Sender: TObject);
 begin
   PgmUpdDirJvImgBtn.Hint := 'Program update directory, LC-Open, RC-Copy to clipboard';
 end;
-{========================================================================}
+
 procedure TAboutBox.PgmUpdBtnClick2(Sender: TObject);
 begin
   DownloadPgmUpdate;
 end;
-{========================================================================}
+
 procedure TAboutBox.OpenDirectory(DirectoryName: String);
 begin
   ShellExecute(Application.Handle,
@@ -206,7 +206,7 @@ begin
     SW_NORMAL     //see other possibilities by ctrl+clicking on SW_NORMAL
     );
 end;
-{========================================================================}
+
 procedure TAboutBox.PgmUpdDirJvImgBtnMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -237,7 +237,7 @@ begin
     end;
   end;
 end;
-{========================================================================}
+
 procedure TAboutBox.PgmUpdBtnClick(Sender: TObject);
 var
   HostDirName, PgmVersionStr, RegexStr: String;
@@ -265,7 +265,7 @@ begin
   OKBtn.Enabled := True;
   PgmUpdDirJvImgBtn.Enabled := True;
 end;
-{========================================================================}
+
 procedure TAboutBox.FormActivate(Sender: TObject);
 var
   B1L, B1W, B2L, B2W, B3L, B3W, B4L, {B4W,} S1, S2, S3, ST: Integer;
@@ -288,7 +288,7 @@ begin
   PgmUpdDirJvImgBtn.Left := B2L;
   PgmUpdBtn.Left := B3L;
 end;
-{========================================================================}
+
 procedure TAboutBox.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   //cancel hint before closing form
@@ -306,13 +306,13 @@ begin
     CanClose := True;
   end;
 end;
-{========================================================================}
+
 procedure TAboutBox.TestSetVersionToZeroBtnClick(Sender: TObject);
 begin
   LclVerStr := CFPUAppName+'-v0.0.0.0';
   VersionLbl.Caption := '0.0.0.0';
 end;
-{========================================================================}
+
 function TAboutBox.CheckForPgmUpdate(HostDirName, HostName, UserName, PassWord, PgmVersionStr, RegexStr: String): String;
 var
   UpdateVersionStr: String;
@@ -356,7 +356,7 @@ begin
   end;
   Regex.Free;
 end;
-{========================================================================}
+
 procedure TAboutBox.WriteIniFile(IniFileName: String);
 var
   RegIniFile: TIniFile;
@@ -371,7 +371,7 @@ begin
     RegIniFile.Free;
   end;
 end;
-{========================================================================}
+
 procedure TAboutBox.DownloadPgmUpdate;
 var
   HostDirName: String;
@@ -405,6 +405,6 @@ begin
     PgmUpdBtn.Caption := 'Error!';
   end;
 end;
-{========================================================================}
+
 end.
 

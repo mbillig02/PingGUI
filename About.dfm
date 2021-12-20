@@ -11,14 +11,15 @@ object AboutBox: TAboutBox
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  OldCreateOrder = True
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  PixelsPerInch = 96
   DesignSize = (
     259
     151)
+  PixelsPerInch = 96
   TextHeight = 13
   object Panel: TPanel
     Left = 8
@@ -30,7 +31,6 @@ object AboutBox: TAboutBox
     BevelOuter = bvLowered
     ParentColor = True
     TabOrder = 1
-    ExplicitWidth = 235
     DesignSize = (
       243
       105)
@@ -251,7 +251,6 @@ object AboutBox: TAboutBox
     Default = True
     ModalResult = 1
     TabOrder = 0
-    ExplicitLeft = 168
   end
   object PgmUpdDirJvImgBtn: TJvImgBtn
     Left = 47
