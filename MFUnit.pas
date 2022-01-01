@@ -152,6 +152,7 @@ type
     N1: TMenuItem;
     N2: TMenuItem;
     N3: TMenuItem;
+    LeftAxisAutoMinChkBox: TCheckBox;
     procedure TimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure SecondsToShowComboBoxChange(Sender: TObject);
@@ -206,6 +207,7 @@ type
     procedure aCopyLstDirPathToClipboardExecute(Sender: TObject);
     procedure aOpenDtaDirInExplorerExecute(Sender: TObject);
     procedure aOpenLstDirInExplorerExecute(Sender: TObject);
+    procedure LeftAxisAutoMinChkBoxClick(Sender: TObject);
   private
     FInitialized: Boolean;
     FLogOpen: Boolean;
@@ -450,6 +452,12 @@ begin
   CheckBox6.Checked := ChkBoxState6; PingChart.Series[5].Visible := CheckBox6.Checked;
   CheckBox7.Checked := ChkBoxState7; PingChart.Series[6].Visible := CheckBox7.Checked;
   CheckBox8.Checked := ChkBoxState8; PingChart.Series[7].Visible := CheckBox8.Checked;
+end;
+
+procedure TMainForm.LeftAxisAutoMinChkBoxClick(Sender: TObject);
+begin
+  PingChart.LeftAxis.AutomaticMinimum := LeftAxisAutoMinChkBox.Checked;
+  if not LeftAxisAutoMinChkBox.Checked then PingChart.LeftAxis.Minimum := 0;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -1401,8 +1409,8 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-//  ReportMemoryLeaksOnShutdown := (DebugHook <> 0); // Report if running debugger
-  ReportMemoryLeaksOnShutdown := True;
+  ReportMemoryLeaksOnShutdown := (DebugHook <> 0); // Report if running debugger
+//  ReportMemoryLeaksOnShutdown := True;
 end;
 
 procedure TMainForm.AutoZipJvClockAlarm(Sender: TObject);

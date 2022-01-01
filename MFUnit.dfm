@@ -595,6 +595,18 @@ object MainForm: TMainForm
         OnClick = CheckBox8Click
       end
     end
+    object LeftAxisAutoMinChkBox: TCheckBox
+      Left = 504
+      Top = 8
+      Width = 137
+      Height = 17
+      Anchors = [akTop, akRight]
+      Caption = 'Left Axis Auto Minimum'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = LeftAxisAutoMinChkBoxClick
+    end
     object PingSeries1: TLineSeries
       SeriesColor = clGreen
       Title = 'PingSeries1'
