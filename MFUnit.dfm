@@ -115,6 +115,8 @@ object MainForm: TMainForm
       Alignment = taCenter
       AutoSize = False
       Caption = 'Low'
+      Color = 3289650
+      ParentColor = False
     end
     object Label1H: TLabel
       Tag = 1
@@ -125,6 +127,8 @@ object MainForm: TMainForm
       Alignment = taCenter
       AutoSize = False
       Caption = 'High'
+      Color = 3289650
+      ParentColor = False
     end
     object Label1A: TLabel
       Tag = 1
@@ -135,6 +139,8 @@ object MainForm: TMainForm
       Alignment = taCenter
       AutoSize = False
       Caption = 'Average'
+      Color = 3289650
+      ParentColor = False
       OnMouseDown = AverageLabelMouseDown
     end
     object Label1LTT: TLabel
@@ -146,6 +152,8 @@ object MainForm: TMainForm
       Alignment = taCenter
       AutoSize = False
       Caption = 'Time'
+      Color = 3289650
+      ParentColor = False
     end
     object Label2L: TLabel
       Tag = 2
@@ -277,6 +285,8 @@ object MainForm: TMainForm
       Alignment = taCenter
       AutoSize = False
       Caption = 'Timeouts'
+      Color = 3289650
+      ParentColor = False
       OnMouseDown = LabelxTMouseDown
       OnMouseUp = LabelxTMouseUp
     end
@@ -315,6 +325,58 @@ object MainForm: TMainForm
       Caption = 'Timeouts'
       OnMouseDown = LabelxTMouseDown
       OnMouseUp = LabelxTMouseUp
+    end
+    object HCBSpdBtn1: TSpeedButton
+      Tag = 1
+      Left = 128
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
+    object HCBSpdBtn2: TSpeedButton
+      Tag = 2
+      Left = 181
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
+    object HCBSpdBtn3: TSpeedButton
+      Tag = 3
+      Left = 234
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
+    object HCBSpdBtn4: TSpeedButton
+      Tag = 4
+      Left = 291
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
     end
     object HostComboBox1: TComboBox
       Tag = 1
@@ -1183,6 +1245,58 @@ object MainForm: TMainForm
       AutoSize = False
       Caption = 'Time'
     end
+    object HCBSpdBtn5: TSpeedButton
+      Tag = 5
+      Left = 128
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
+    object HCBSpdBtn6: TSpeedButton
+      Tag = 6
+      Left = 180
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
+    object HCBSpdBtn7: TSpeedButton
+      Tag = 7
+      Left = 233
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
+    object HCBSpdBtn8: TSpeedButton
+      Tag = 8
+      Left = 290
+      Top = 32
+      Width = 15
+      Height = 21
+      Hint = 'Clear HostName'
+      Caption = 'X'
+      Flat = True
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = HCBSpdBtnClick
+    end
     object HostComboBox5: TComboBox
       Tag = 5
       Left = 1
@@ -1343,6 +1457,9 @@ object MainForm: TMainForm
     end
     object mmi4or8: TMenuItem
       Action = a4or8
+    end
+    object mmiStyles: TMenuItem
+      Caption = 'Styles'
     end
     object mmiMisc: TMenuItem
       Caption = 'Misc'
