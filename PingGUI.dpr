@@ -1,7 +1,6 @@
 program PingGUI;
 
 uses
-//  FastMM4,
   Forms,
   Windows,
   Classes,
@@ -11,7 +10,9 @@ uses
   About in 'About.pas' {AboutBox},
   HLEUnit in 'HLEUnit.pas' {HLEDlg},
   PadUnit in 'PadUnit.pas' {PadForm},
-  DLUnit in 'DLUnit.pas' {DisplayLogForm};
+  DLUnit in 'DLUnit.pas' {DisplayLogForm},
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 

@@ -9,9 +9,10 @@ uses
   TeeProcs, Chart, ComCtrls, FileCtrl, JvExExtCtrls,
   JvExtComponent, JvClock, JvComponentBase,
   JvRollOut, VclTee.TeeGDIPlus, OverbyteIcsSmtpProt, JvBalloonHint,
-  System.Actions, Vcl.ActnList, Vcl.Menus;
+  System.Actions, Vcl.ActnList, Vcl.Menus, Themes;
 
 const
+  clCarbon = $00323232;
   clPing1C = clGreen;
   clPing2C = clBlue;
   clPing3C = $000080FF; //Orange
@@ -153,6 +154,15 @@ type
     N2: TMenuItem;
     N3: TMenuItem;
     LeftAxisAutoMinChkBox: TCheckBox;
+    mmiStyles: TMenuItem;
+    HCBSpdBtn1: TSpeedButton;
+    HCBSpdBtn2: TSpeedButton;
+    HCBSpdBtn3: TSpeedButton;
+    HCBSpdBtn4: TSpeedButton;
+    HCBSpdBtn5: TSpeedButton;
+    HCBSpdBtn6: TSpeedButton;
+    HCBSpdBtn7: TSpeedButton;
+    HCBSpdBtn8: TSpeedButton;
     procedure TimerTimer(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure SecondsToShowComboBoxChange(Sender: TObject);
@@ -208,6 +218,7 @@ type
     procedure aOpenDtaDirInExplorerExecute(Sender: TObject);
     procedure aOpenLstDirInExplorerExecute(Sender: TObject);
     procedure LeftAxisAutoMinChkBoxClick(Sender: TObject);
+    procedure HCBSpdBtnClick(Sender: TObject);
   private
     FInitialized: Boolean;
     FLogOpen: Boolean;
@@ -238,18 +249,26 @@ type
     procedure SizeControls;
     procedure SetSecond4Visibility(Second4Visible: Boolean);
     procedure RightMenu;
+    procedure AddStylesToMainMenu(StylesCaption: String);
+    procedure mmiStylesClick(Sender: TObject);
+    procedure CheckStyle(Menu: TMenuItem; StyleStr: String);
+    procedure UnCheckStyles(Menu: TMenuItem);
+    function FindMenuItemByHint(AMainMenu: TMainMenu;
+      const Hint: String): TMenuItem;
+    procedure LoadStyleSettings;
+    procedure SetAllComponentsColor(Base: TPanel; ColorToSet: TColor);
   public
   end;
 
 var
   MainForm: TMainForm;
   ShowTestControls: Boolean;
-  LogDir: String;
+  LogDir, StyleStr: String;
 
 implementation
 
 uses Registry, UtlUnit, About, ShellAPI, DateUtils, HLEUnit,
-  PadUnit, PerlRegEx, jclSysInfo, IniFiles, DLUnit, ClipBrd, System.Zip, System.UITypes;
+  PadUnit, PerlRegEx, jclSysInfo, IniFiles, DLUnit, ClipBrd, System.Zip, System.UITypes, StrUtils;
 
 var
   SecondsToShow, DaysToKeep: Integer;
@@ -329,6 +348,99 @@ begin
     Result := '';
 end;
 
+procedure TMainForm.LoadStyleSettings;
+var
+  RegIniFile: TIniFile;
+begin
+  RegIniFile := TIniFile.Create(DtaDir + 'PingGUI.INI');
+  try
+    StyleStr := RegIniFile.ReadString('Section-Options', 'Style', 'Windows');
+  finally
+    RegIniFile.Free;
+  end;
+end;
+
+procedure TMainForm.AddStylesToMainMenu(StylesCaption: String);
+var
+  StyleStr: String;
+  RootAccessItem, ItemToFind: TMenuItem;
+  StylesStrLst: TStringList;
+  i: Integer;
+begin
+  // Add Styles menu items to the MainMenu
+  // ItemToFind := FindMenuItemByCaption(MainMenu, 'Styles'); // Does not work in the top
+  ItemToFind := MainMenu.Items.Find(StylesCaption); // Searches top menu
+  StylesStrLst := TStringList.Create;
+  for StyleStr in TStyleManager.StyleNames do StylesStrLst.Append(StyleStr);
+  StylesStrLst.Sort;
+  for i := 0 to StylesStrLst.Count - 1 do
+  begin
+    RootAccessItem := TMenuItem.Create(Self);
+    RootAccessItem.Caption := StylesStrLst[i];
+    RootAccessItem.Hint := StylesStrLst[i];
+    RootAccessItem.OnClick := mmiStylesClick;
+    ItemToFind.Add(RootAccessItem);
+  end;
+  StylesStrLst.Free;
+end;
+
+procedure TMainForm.CheckStyle(Menu: TMenuItem; StyleStr: String);
+var
+  i: Integer;
+begin
+  for i := 0 to Menu.Count - 1 do
+  begin
+    if Menu.Items[i].Hint = StyleStr then
+      Menu.Items[i].Checked := True;
+  end;
+end;
+
+procedure TMainForm.UnCheckStyles(Menu: TMenuItem);
+var
+  i: Integer;
+begin
+  for i := 0 to Menu.Count - 1 do
+  begin
+    Menu.Items[i].Checked := False;
+  end;
+end;
+
+procedure TMainForm.SetAllComponentsColor(Base: TPanel; ColorToSet: TColor);
+var
+  i: Integer;
+begin
+  for i := 0 to Base.ControlCount - 1 do
+  begin
+    if Base.Controls[i] is TLabel then
+      (Base.Controls[i] as TLabel).Color := ColorToSet;
+  end;
+end;
+
+procedure TMainForm.mmiStylesClick(Sender: TObject);
+var i: Integer;
+begin
+  UnCheckStyles(MainMenu.Items.Find('Styles'));
+  TStyleManager.TrySetStyle((Sender as TMenuItem).Hint);
+  StyleStr := (Sender as TMenuItem).Hint;
+  case IndexStr(StyleStr, ['Carbon', 'Light', 'Windows', 'Windows10', 'Windows10 Dark']) of
+    0: begin
+         PingChart.Color := clCarbon; // Carbon
+         SetAllComponentsColor(TopPanel, clCarbon);
+         SetAllComponentsColor(TopPanel2, clCarbon);
+       end;
+    2: begin
+         PingChart.Color := clBtnFace; // Windows
+         SetAllComponentsColor(TopPanel, clBtnFace);
+         SetAllComponentsColor(TopPanel2, clBtnFace);
+       end;
+  else
+    PingChart.Color := clBtnFace;
+    SetAllComponentsColor(TopPanel, clBtnFace);
+    SetAllComponentsColor(TopPanel2, clBtnFace);
+  end;
+  CheckStyle(MainMenu.Items.Find('Styles'), StyleStr);
+end;
+
 // https://stackoverflow.com/questions/11594084/shift-in-the-right-of-last-item-of-the-menu
 Procedure TMainForm.RightMenu; // Shift in the right of last item of the menu
 var
@@ -344,6 +456,33 @@ begin
   GetMenuItemInfo(MainMenu, mmiVersionAbout.Command, False, mii);
   mii.fType := mii.fType or MFT_RIGHTJUSTIFY;
   if SetMenuItemInfo(MainMenu, mmiVersionAbout.Command, False, mii) then DrawMenuBar(Self.Menu.WindowHandle);
+end;
+
+function TMainForm.FindMenuItemByHint(AMainMenu: TMainMenu; const Hint: String): TMenuItem;
+
+  function FindItemInner(Item: TMenuItem; const Hint: String): TMenuItem;
+  var
+    i: Integer;
+  begin
+    Result := nil;
+    if Item.Hint = Hint then
+    begin
+      Result := Item;
+      Exit;
+    end
+    else
+    begin
+      for i := 0 to Item.Count - 1 do
+      begin
+        Result := FindItemInner(Item.Items[i], Hint);
+        if Result <> nil then
+          Break;
+      end;
+    end;
+  end;
+
+begin
+  Result := FindItemInner(AMainMenu.Items, Hint);
 end;
 
 procedure TMainForm.Display1(Msg: String);
@@ -559,6 +698,7 @@ begin
     RegIniFile.WriteBool('Section-Options', 'Second4Visible', TopPanel2.Visible);
 
     RegIniFile.WriteString('Section-Directories', 'LogDir', LogDir);
+    RegIniFile.WriteString('Section-Options', 'Style', StyleStr);
 
     RegIniFile.WriteString('Section-Hosts', 'PingHostName1', HostComboBox1.Text);
     RegIniFile.WriteString('Section-Hosts', 'PingHostName2', HostComboBox2.Text);
@@ -714,7 +854,8 @@ begin
   Label1T.Left := Panel1.Left + Panel1.Width - ((Panel1.Width div 6) * 2);
   Label1LTT.Left := Panel1.Left + Panel1.Width - ((Panel1.Width div 6) * 2);
   ContinuousPingSpdBtn1.Width := (Label1T.Left - ContinuousPingSpdBtn1.Left) - 10;
-  HostComboBox1.Width := ContinuousPingSpdBtn1.Width;
+  HostComboBox1.Width := ContinuousPingSpdBtn1.Width - 15;
+  HCBSpdBtn1.Left := HostComboBox1.Left + HostComboBox1.Width;
   PostMessage(HostComboBox1.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   DisplayMemo6.Height := Panel2.Height div 2;
@@ -726,7 +867,8 @@ begin
   Label2T.Left := Panel2.Left + Panel2.Width - ((Panel2.Width div 6) * 2);
   Label2LTT.Left := Panel2.Left + Panel2.Width - ((Panel2.Width div 6) * 2);
   ContinuousPingSpdBtn2.Width := (Label2T.Left - ContinuousPingSpdBtn2.Left) - 10;
-  HostComboBox2.Width := ContinuousPingSpdBtn2.Width;
+  HostComboBox2.Width := ContinuousPingSpdBtn2.Width - 15;
+  HCBSpdBtn2.Left := HostComboBox2.Left + HostComboBox2.Width;
   PostMessage(HostComboBox2.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   DisplayMemo7.Height := Panel3.Height div 2;
@@ -738,7 +880,8 @@ begin
   Label3T.Left := Panel3.Left + Panel3.Width - ((Panel3.Width div 6) * 2);
   Label3LTT.Left := Panel3.Left + Panel3.Width - ((Panel3.Width div 6) * 2);
   ContinuousPingSpdBtn3.Width := (Label3T.Left - ContinuousPingSpdBtn3.Left) - 10;
-  HostComboBox3.Width := ContinuousPingSpdBtn3.Width;
+  HostComboBox3.Width := ContinuousPingSpdBtn3.Width - 15;
+  HCBSpdBtn3.Left := HostComboBox3.Left + HostComboBox3.Width;
   PostMessage(HostComboBox3.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   DisplayMemo8.Height := Panel4.Height div 2;
@@ -750,7 +893,8 @@ begin
   Label4T.Left := Panel4.Left + Panel4.Width - ((Panel4.Width div 6) * 2);
   Label4LTT.Left := Panel4.Left + Panel4.Width - ((Panel4.Width div 6) * 2);
   ContinuousPingSpdBtn4.Width := (Label4T.Left - ContinuousPingSpdBtn4.Left) - 10;
-  HostComboBox4.Width := ContinuousPingSpdBtn4.Width;
+  HostComboBox4.Width := ContinuousPingSpdBtn4.Width - 15;
+  HCBSpdBtn4.Left := HostComboBox4.Left + HostComboBox4.Width;
   PostMessage(HostComboBox4.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   ContinuousPingSpdBtn5.Left := ContinuousPingSpdBtn1.Left;
@@ -761,7 +905,8 @@ begin
   Label5T.Left := Label1T.Left;
   Label5LTT.Left := Label1T.Left;
   ContinuousPingSpdBtn5.Width := (Label5T.Left - ContinuousPingSpdBtn5.Left) - 10;
-  HostComboBox5.Width := ContinuousPingSpdBtn5.Width;
+  HostComboBox5.Width := ContinuousPingSpdBtn5.Width - 15;
+  HCBSpdBtn5.Left := HostComboBox5.Left + HostComboBox5.Width;
   PostMessage(HostComboBox5.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   ContinuousPingSpdBtn6.Left := ContinuousPingSpdBtn2.Left;
@@ -772,7 +917,8 @@ begin
   Label6T.Left := Label2T.Left;
   Label6LTT.Left := Label2T.Left;
   ContinuousPingSpdBtn6.Width := (Label6T.Left - ContinuousPingSpdBtn6.Left) - 10;
-  HostComboBox6.Width := ContinuousPingSpdBtn6.Width;
+  HostComboBox6.Width := ContinuousPingSpdBtn6.Width - 15;
+  HCBSpdBtn6.Left := HostComboBox6.Left + HostComboBox6.Width;
   PostMessage(HostComboBox6.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   ContinuousPingSpdBtn7.Left := ContinuousPingSpdBtn3.Left;
@@ -783,7 +929,8 @@ begin
   Label7T.Left := Label3T.Left;
   Label7LTT.Left := Label3T.Left;
   ContinuousPingSpdBtn7.Width := (Label7T.Left - ContinuousPingSpdBtn7.Left) - 10;
-  HostComboBox7.Width := ContinuousPingSpdBtn7.Width;
+  HostComboBox7.Width := ContinuousPingSpdBtn7.Width - 15;
+  HCBSpdBtn7.Left := HostComboBox7.Left + HostComboBox7.Width;
   PostMessage(HostComboBox7.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   ContinuousPingSpdBtn8.Left := ContinuousPingSpdBtn4.Left;
@@ -794,7 +941,8 @@ begin
   Label8T.Left := Label4T.Left;
   Label8LTT.Left := Label4T.Left;
   ContinuousPingSpdBtn8.Width := (Label8T.Left - ContinuousPingSpdBtn8.Left) - 10;
-  HostComboBox8.Width := ContinuousPingSpdBtn8.Width;
+  HostComboBox8.Width := ContinuousPingSpdBtn8.Width - 15;
+  HCBSpdBtn8.Left := HostComboBox8.Left + HostComboBox8.Width;
   PostMessage(HostComboBox8.Handle, CB_SETEDITSEL, 0, 0); // unselect text
 
   AutoZipJvClock.Left := (MainForm.Width div 2) - (AutoZipJvClock.Width div 2);
@@ -1253,13 +1401,19 @@ var
   i: Integer;
   RegEx: TPerlRegEx;
   VerStr: String;
+  Item: TMenuItem;
 begin
   if not FInitialized then
   begin
     FInitialized := True;
     VerStr := 'PingGUI-v' + GetVersionInfoStr(ParamStr(0));
     MainMenu.Items.Find('About').Caption := VerStr;
+
+    AddStylesToMainMenu('Styles');
+    Item := FindMenuItemByHint(MainMenu, StyleStr);
+    if Assigned(Item) then Item.Checked := True;
     RightMenu;
+
     LclVerStr := VerStr;
     CBPanel.Top := PingChart.Height - (CBPanel.Height + 3);
     MainForm.Top := Screen.WorkAreaTop;
@@ -1279,7 +1433,8 @@ begin
 
     ExeDir := ExtractFilePath(Application.ExeName);
     LclExeDir := ExeDir;
-    DtaDir := GetAppdataFolder + '\MWB\PingGUI\'; SysUtils.ForceDirectories(DtaDir);
+    // Moved to FormCreate
+//    DtaDir := GetAppdataFolder + '\MWB\PingGUI\'; SysUtils.ForceDirectories(DtaDir);
     LstDir := DtaDir + 'LST\'; SysUtils.ForceDirectories(LstDir);
     LclDtaDir := DtaDir;
     TmpDir := DtaDir + 'TMP\'; SysUtils.ForceDirectories(TmpDir);
@@ -1411,6 +1566,25 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   ReportMemoryLeaksOnShutdown := (DebugHook <> 0); // Report if running debugger
 //  ReportMemoryLeaksOnShutdown := True;
+  DtaDir := GetAppdataFolder + '\MWB\PingGUI\'; SysUtils.ForceDirectories(DtaDir);
+  LoadStyleSettings;
+  case IndexStr(StyleStr, ['Carbon', 'Light', 'Windows', 'Windows10', 'Windows10 Dark']) of
+    0: begin
+         PingChart.Color := clCarbon; // Carbon
+         SetAllComponentsColor(TopPanel, clCarbon);
+         SetAllComponentsColor(TopPanel2, clCarbon);
+       end;
+    2: begin
+         PingChart.Color := clBtnFace; // Windows
+         SetAllComponentsColor(TopPanel, clBtnFace);
+         SetAllComponentsColor(TopPanel2, clBtnFace);
+       end;
+  else
+    PingChart.Color := clBtnFace;
+    SetAllComponentsColor(TopPanel, clBtnFace);
+    SetAllComponentsColor(TopPanel2, clBtnFace);
+  end;
+  TStyleManager.TrySetStyle(StyleStr);
 end;
 
 procedure TMainForm.AutoZipJvClockAlarm(Sender: TObject);
@@ -1815,6 +1989,20 @@ end;
 procedure TMainForm.SecondsToShowComboBoxChange(Sender: TObject);
 begin
   SecondsToShow := StrToInt('-' + SecondsToShowComboBox.Items[SecondsToShowComboBox.ItemIndex]);
+end;
+
+procedure TMainForm.HCBSpdBtnClick(Sender: TObject);
+begin
+  case (Sender as TSpeedButton).Tag of
+    1: HostComboBox1.Text := '';
+    2: HostComboBox2.Text := '';
+    3: HostComboBox3.Text := '';
+    4: HostComboBox4.Text := '';
+    5: HostComboBox5.Text := '';
+    6: HostComboBox6.Text := '';
+    7: HostComboBox7.Text := '';
+    8: HostComboBox8.Text := '';
+  end;
 end;
 
 procedure TMainForm.HostComboBoxChange(Sender: TObject);
